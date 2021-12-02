@@ -1,3 +1,6 @@
+import javafx.util.Pair;
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,74 +11,41 @@ public class ArrayOperations {
         this.numbers = numbers;
     }
 
-    public String getEvenNumbers() {
-        StringBuilder evenNumbers = new StringBuilder("Четные числа: ");
-        for (int number : numbers) {
-            if (number % 2 == 0) {
-                evenNumbers.append(number + ", ");
-            }
-        }
-        if (evenNumbers.length() == "Четные числа: ".length()) {
-            evenNumbers.append(" - ");
-        } else {
-            evenNumbers.setLength(evenNumbers.length() - 2);
-        }
-        return evenNumbers.toString();
+    public int[] getEvenNumbers() {
+        return Arrays.stream(numbers).filter(number -> isEven(number)).toArray();
     }
 
-    public String getOddNumbers() {
-        StringBuilder oddNumbers = new StringBuilder("Нечетные числа: ");
-        for (int number : numbers) {
-            if (number % 2 == 1 || number % 2 == -1) {
-                oddNumbers.append(number + ", ");
-            }
-        }
-        if (oddNumbers.length() == "Нечетные числа: ".length()) {
-            oddNumbers.append("-");
-        } else {
-            oddNumbers.setLength(oddNumbers.length() - 2);
-        }
-        return oddNumbers.toString();
+    private boolean isEven(int number) {
+        return number % 2 == 0;
     }
 
-    public String getDivisibleByXNumbers(int x) {
-        StringBuilder divisibleByXNumbers = new StringBuilder("Числа, которые делятся на " + x + ": ");
-        for (int number : numbers) {
-            if (number % x == 0) {
-                divisibleByXNumbers.append(number + ", ");
-            }
-        }
-        if (divisibleByXNumbers.length() == ("Числа, которые делятся на " + x + ": ").length()) {
-            divisibleByXNumbers.append("-");
-        } else {
-            divisibleByXNumbers.setLength(divisibleByXNumbers.length() - 2);
-        }
-        return divisibleByXNumbers.toString();
+    public int[] getOddNumbers() {
+        return Arrays.stream(numbers).filter(number -> !isEven(number)).toArray();
     }
 
-    public String getGcdOfNumbers() {
-        int[] firstTwoPositiveNumbers = getFirstTwoPositiveNumbers(numbers);
-        int firstPositiveNumber = firstTwoPositiveNumbers[0];
-        int secondPositiveNumber = firstTwoPositiveNumbers[1];
-        if (firstPositiveNumber != -1 && secondPositiveNumber != -1) {
-            return "НОД чисел " + firstPositiveNumber + " и " + secondPositiveNumber +
-                    " равен " + gcd(firstPositiveNumber, secondPositiveNumber);
-        }
-        return "Массив содержит менее двух положительных чисел, посчитать НОД не удалось!";
+    public int[] getDivisibleByXNumbers(int x) {
+        return Arrays.stream(numbers).filter(number -> isDivisibleByX(number, x)).toArray();
     }
 
-    public String getLcmOfNumbers() {
-        int[] firstTwoPositiveNumbers = getFirstTwoPositiveNumbers(numbers);
-        int firstPositiveNumber = firstTwoPositiveNumbers[0];
-        int secondPositiveNumber = firstTwoPositiveNumbers[1];
-        if (firstPositiveNumber != -1 || secondPositiveNumber != -1) {
-            return "НОК чисел " + firstPositiveNumber + " и " + secondPositiveNumber +
-                    " равен " + lcm(firstPositiveNumber, secondPositiveNumber);
-        }
-        return "Массив содержит менее двух положительных чисел, посчитать НОК не удалось!";
+    private boolean isDivisibleByX(int number, int x) {
+        return number % x == 0;
     }
 
-    private int[] getFirstTwoPositiveNumbers(int[] numbers) {
+    public int getGcdOfNumbers() {
+        Pair<Integer, Integer> firstTwoPositiveNumbers = getFirstTwoPositiveNumbers(numbers);
+        int firstPositiveNumber = firstTwoPositiveNumbers.getKey();
+        int secondPositiveNumber = firstTwoPositiveNumbers.getValue();
+        return gcd(firstPositiveNumber, secondPositiveNumber);
+    }
+
+    public int getLcmOfNumbers() {
+        Pair<Integer, Integer> firstTwoPositiveNumbers = getFirstTwoPositiveNumbers(numbers);
+        int firstPositiveNumber = firstTwoPositiveNumbers.getKey();
+        int secondPositiveNumber = firstTwoPositiveNumbers.getValue();
+        return lcm(firstPositiveNumber, secondPositiveNumber);
+    }
+
+    private Pair<Integer, Integer> getFirstTwoPositiveNumbers(int[] numbers) {
         int counter = 0;
         int firstPositiveNumber = -1;
         int secondPositiveNumber = -1;
@@ -92,30 +62,25 @@ public class ArrayOperations {
                 counter++;
             }
         }
-        return new int[]{firstPositiveNumber, secondPositiveNumber};
+        return new Pair(firstPositiveNumber, secondPositiveNumber);
     }
 
     private int gcd(int a, int b) {
-        return b == 0 ? a : gcd(b, a % b);
+        if (a != -1 && b != -1) {
+            return b == 0 ? a : gcd(b, a % b);
+        }
+        return -1;
     }
 
     private int lcm(int a, int b) {
-        return a / gcd(a, b) * b;
+        if (a != -1 && b != -1) {
+            return a / gcd(a, b) * b;
+        }
+        return -1;
     }
 
-    public String getPrimeNumbers() {
-        StringBuilder primeNumbers = new StringBuilder("Простые числа: ");
-        for (int number : numbers) {
-            if (isPrime(number)) {
-                primeNumbers.append(number + ", ");
-            }
-        }
-        if (primeNumbers.length() == "Простые числа: ".length()) {
-            primeNumbers.append("-");
-        } else {
-            primeNumbers.setLength(primeNumbers.length() - 2);
-        }
-        return primeNumbers.toString();
+    public int[] getPrimeNumbers() {
+        return Arrays.stream(numbers).filter(number -> isPrime(number)).toArray();
     }
 
     private boolean isPrime(int number) {
@@ -132,19 +97,8 @@ public class ArrayOperations {
         return true;
     }
 
-    public String getHappyNumbers() {
-        StringBuilder happyNumbers = new StringBuilder("Cчастливые числа: ");
-        for (int number : numbers) {
-            if (isHappyNumber(number)) {
-                happyNumbers.append(number + ", ");
-            }
-        }
-        if (happyNumbers.length() == "Cчастливые числа: ".length()) {
-            happyNumbers.append("-");
-        } else {
-            happyNumbers.setLength(happyNumbers.length() - 2);
-        }
-        return happyNumbers.toString();
+    public int[] getHappyNumbers() {
+        return Arrays.stream(numbers).filter(number -> isHappyNumber(number)).toArray();
     }
 
     private boolean isHappyNumber(int number) {
@@ -160,38 +114,16 @@ public class ArrayOperations {
         return number == 1;
     }
 
-    public String getFibonacciNumbers() {
-        StringBuilder fibonacciNumbers = new StringBuilder("Числа Фибоначчи: ");
-        for (int number : numbers) {
-            if (isFibonacci(number)) {
-                fibonacciNumbers.append(number + ", ");
-            }
-        }
-        if (fibonacciNumbers.length() == "Числа Фибоначчи: ".length()) {
-            fibonacciNumbers.append("-");
-        } else {
-            fibonacciNumbers.setLength(fibonacciNumbers.length() - 2);
-        }
-        return fibonacciNumbers.toString();
+    public int[] getFibonacciNumbers() {
+        return Arrays.stream(numbers).filter(number -> isFibonacci(number)).toArray();
     }
 
     private boolean isFibonacci(int number) {
         return (Math.sqrt(5 * number * number + 4) % 1 == 0 || Math.sqrt(5 * number * number - 4) % 1 == 0) && number > 0;
     }
 
-    public String getPalindromeNumbers() {
-        StringBuilder palindromeNumbers = new StringBuilder("Числа-палиндромы: ");
-        for (int number : numbers) {
-            if (isPalindrome(number)) {
-                palindromeNumbers.append(number + ", ");
-            }
-        }
-        if (palindromeNumbers.length() == "Числа-палиндромы: ".length()) {
-            palindromeNumbers.append("-");
-        } else {
-            palindromeNumbers.setLength(palindromeNumbers.length() - 2);
-        }
-        return palindromeNumbers.toString();
+    public int[] getPalindromeNumbers() {
+        return Arrays.stream(numbers).filter(number -> isPalindrome(number)).toArray();
     }
 
     private boolean isPalindrome(int number) {
@@ -199,10 +131,10 @@ public class ArrayOperations {
         return numberToString.equals(new StringBuilder(numberToString).reverse().toString());
     }
 
-    public String getDecimalPeriod() {
-        int[] firstTwoPositiveNumbers = getFirstTwoConsecutivePositiveNumbers(numbers);
-        int firstPositiveNumber = firstTwoPositiveNumbers[0];
-        int secondPositiveNumber = firstTwoPositiveNumbers[1];
+    public int getDecimalPeriod() {
+        Pair<Integer, Integer> firstTwoPositiveNumbers = getFirstTwoConsecutivePositiveNumbers(numbers);
+        int firstPositiveNumber = firstTwoPositiveNumbers.getKey();
+        int secondPositiveNumber = firstTwoPositiveNumbers.getValue();
         if (firstPositiveNumber != -1 && secondPositiveNumber != -1) {
             int m, n, r, l, t, i;
             m = firstPositiveNumber % secondPositiveNumber;
@@ -218,30 +150,25 @@ public class ArrayOperations {
                 l++;
             } while (r != t);
             t = r = m;
-            StringBuilder decimalPeriod = new StringBuilder("Период десятичной дроби p = m/n для ");
-            decimalPeriod.append("m = " + firstPositiveNumber + " и n = " + secondPositiveNumber + ": ");
-            decimalPeriod.append((int) firstPositiveNumber / secondPositiveNumber + ".");
+            StringBuilder decimalPeriod = new StringBuilder();
             for (i = 0; i < l; i++) {
                 r = (r * 10) % n;
             }
             for (i = 0; r != t; i++) {
-                decimalPeriod.append(t * 10 / n);
                 r = (r * 10) % n;
                 t = (t * 10) % n;
             }
-            decimalPeriod.append('(');
             for (i = 0; i < l; i++) {
                 decimalPeriod.append(t * 10 / n);
                 t = (t * 10) % n;
             }
-            decimalPeriod.append(')');
-            return decimalPeriod.toString();
+            return Integer.valueOf(decimalPeriod.toString());
         } else {
-            return "Период дроби посчитать не удалось! Массив не содержит двух положительных чисел, расположенных подряд!";
+            return -1;
         }
     }
 
-    private int[] getFirstTwoConsecutivePositiveNumbers(int[] numbers) {
+    private Pair<Integer, Integer> getFirstTwoConsecutivePositiveNumbers(int[] numbers) {
         int firstPositiveNumber = -1;
         int secondPositiveNumber = -1;
         for (int i = 1; i < numbers.length; i++) {
@@ -251,7 +178,7 @@ public class ArrayOperations {
                 break;
             }
         }
-        return new int[]{firstPositiveNumber, secondPositiveNumber};
+        return new Pair(firstPositiveNumber, secondPositiveNumber);
     }
 
     public String getPascalTriangle() {
@@ -285,10 +212,9 @@ public class ArrayOperations {
         if (number < 0) {
             return -1;
         }
-        int result = 1;
-        for (int i = 1; i <= number; i++) {
-            result = result * i;
+        if(number < 2){
+            return 1;
         }
-        return result;
+        return number*factorial(number - 1);
     }
 }
