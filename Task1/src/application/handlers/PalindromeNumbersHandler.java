@@ -1,16 +1,16 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PalindromeNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder palindromeNumbers = new StringBuilder("Числа-палиндромы: ");
-        if (arrayOperations.getPalindromeNumbers().length != 0) {
-            palindromeNumbers.append(Arrays.toString(arrayOperations.getPalindromeNumbers()));
-        } else palindromeNumbers.append("-");
-        return palindromeNumbers.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isPalindrome).collect(Collectors.toList());
+    }
+
+    private boolean isPalindrome(int number) {
+        String numberToString = String.valueOf(number);
+        return numberToString.equals(new StringBuilder(numberToString).reverse().toString());
     }
 }

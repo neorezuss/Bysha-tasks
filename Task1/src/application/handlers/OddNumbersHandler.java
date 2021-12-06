@@ -1,16 +1,15 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OddNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder oddNumbers = new StringBuilder("Нечетные числа: ");
-        if (arrayOperations.getOddNumbers().length != 0) {
-            oddNumbers.append(Arrays.toString(arrayOperations.getOddNumbers()));
-        } else oddNumbers.append("-");
-        return oddNumbers.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isOdd).collect(Collectors.toList());
+    }
+
+    private boolean isOdd(int number) {
+        return number % 2 != 0;
     }
 }

@@ -1,16 +1,15 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FibonacciNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder fibonacciNumbers = new StringBuilder("Числа Фибоначчи: ");
-        if (arrayOperations.getFibonacciNumbers().length != 0) {
-            fibonacciNumbers.append(Arrays.toString(arrayOperations.getFibonacciNumbers()));
-        } else fibonacciNumbers.append("-");
-        return fibonacciNumbers.toString();
+    public Object handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isFibonacci).collect(Collectors.toList());
+    }
+
+    private boolean isFibonacci(int number) {
+        return (Math.sqrt(5 * number * number + 4) % 1 == 0 || Math.sqrt(5 * number * number - 4) % 1 == 0) && number > 0;
     }
 }

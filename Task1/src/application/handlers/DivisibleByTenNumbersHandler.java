@@ -1,16 +1,15 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DivisibleByTenNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder divisibleByTenNumbers = new StringBuilder("Числа, которые делятся на 10: ");
-        if (arrayOperations.getDivisibleByXNumbers(10).length != 0) {
-            divisibleByTenNumbers.append(Arrays.toString(arrayOperations.getDivisibleByXNumbers(10)));
-        } else divisibleByTenNumbers.append("-");
-        return divisibleByTenNumbers.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isDivisibleByTen).collect(Collectors.toList());
+    }
+
+    private boolean isDivisibleByTen(int number) {
+        return number % 10 == 0;
     }
 }

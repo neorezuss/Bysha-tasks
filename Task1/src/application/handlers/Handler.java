@@ -1,7 +1,7 @@
 package application.handlers;
 
-import application.ArrayOperations;
+import java.util.List;
 
 public interface Handler {
-    public String handle(ArrayOperations arrayOperations);
+    public Object handle(List<Integer> numbers);
 }

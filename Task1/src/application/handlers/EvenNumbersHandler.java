@@ -1,16 +1,15 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EvenNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder evenNumbers = new StringBuilder("Четные числа: ");
-        if (arrayOperations.getEvenNumbers().length != 0) {
-            evenNumbers.append(Arrays.toString(arrayOperations.getEvenNumbers()));
-        } else evenNumbers.append("-");
-        return evenNumbers.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isEven).collect(Collectors.toList());
+    }
+
+    private boolean isEven(int number) {
+        return number % 2 == 0;
     }
 }

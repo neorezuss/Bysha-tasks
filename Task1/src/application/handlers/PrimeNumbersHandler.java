@@ -1,16 +1,25 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PrimeNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder primeNumbers = new StringBuilder("Простые числа: ");
-        if (arrayOperations.getPrimeNumbers().length != 0) {
-            primeNumbers.append(Arrays.toString(arrayOperations.getPrimeNumbers()));
-        } else primeNumbers.append("-");
-        return primeNumbers.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isPrime).collect(Collectors.toList());
+    }
+
+    private boolean isPrime(int number) {
+        int temp;
+        if (number < 1) {
+            return false;
+        }
+        for (int i = 2; i <= number / 2; i++) {
+            temp = number % i;
+            if (temp == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }

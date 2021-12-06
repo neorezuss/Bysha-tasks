@@ -1,16 +1,15 @@
 package application.handlers;
 
-import application.ArrayOperations;
-
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DivisibleByThreeNumbersHandler implements Handler {
     @Override
-    public String handle(ArrayOperations arrayOperations) {
-        StringBuilder divisibleByThreeNumbersHandler = new StringBuilder("Числа, которые делятся на 3: ");
-        if (arrayOperations.getDivisibleByXNumbers(3).length != 0) {
-            divisibleByThreeNumbersHandler.append(Arrays.toString(arrayOperations.getDivisibleByXNumbers(3)));
-        } else divisibleByThreeNumbersHandler.append("-");
-        return divisibleByThreeNumbersHandler.toString();
+    public List<Integer> handle(List<Integer> numbers) {
+        return numbers.stream().filter(this::isDivisibleByThree).collect(Collectors.toList());
+    }
+
+    private boolean isDivisibleByThree(int number) {
+        return number % 3 == 0;
     }
 }
