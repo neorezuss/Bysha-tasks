@@ -1,0 +1,234 @@
+дек. 13, 2021 9:18:18 AM application.ElevatorMovementTask run
+INFO: STARTING_TRANSPORTATION
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-9 on floor 1
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-11 on floor 1
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-20 on floor 1
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 1 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-11 on floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-9 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-7 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-10 on floor 4
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-20 on floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-5 on floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-10 on floor 6
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-1 on floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 10
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-1 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-6 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 10 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-6 on floor 8
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-13 on floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-13 on floor 6
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-3 on floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-5 on floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 1
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-7 on floor 1
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 1 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-17 on floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-19 on floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-3 on floor 9
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-12 on floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 10
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 10 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-12 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-17 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-19 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 1
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 1 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-8 on floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-14 on floor 9
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-8 on floor 9
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-2 on floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 10
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-4 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 10 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-2 on floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-4 on floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 1
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-14 on floor 1
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 1 to floor 2
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 2 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 10
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-15 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-16 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller boardPassenger
+INFO: BOARDING_OF_PASSENGER passenger-18 on floor 10
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 10 to floor 9
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 9 to floor 8
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 8 to floor 7
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-15 on floor 7
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 7 to floor 6
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-16 on floor 6
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 6 to floor 5
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 5 to floor 4
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 4 to floor 3
+дек. 13, 2021 9:18:18 AM application.Controller deboardPassenger
+INFO: DEBOARDING_OF_PASSENGER passenger-18 on floor 3
+дек. 13, 2021 9:18:18 AM application.Controller moveElevator
+INFO: MOVING_ELEVATOR from floor 3 to floor 2
+дек. 13, 2021 9:18:18 AM application.ElevatorMovementTask run
+INFO: COMPLETION_TRANSPORTATION
+дек. 13, 2021 9:18:18 AM application.validators.DispatchContainersValidator validate
+INFO: All dispatch containers are empty - true
+дек. 13, 2021 9:18:18 AM application.validators.ElevatorContainerValidator validate
+INFO: Elevator container is empty - true
+дек. 13, 2021 9:18:18 AM application.validators.TransportationStateValidator validate
+INFO: All passengers have completed transportation state - true
+дек. 13, 2021 9:18:18 AM application.validators.PassengersNumberValidator validate
+INFO: Number of passengers in arrival containers is equals to initial number of passengers - true
