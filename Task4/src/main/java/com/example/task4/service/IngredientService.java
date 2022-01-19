@@ -6,9 +6,9 @@ import com.example.task4.entity.IngredientType;
 import java.util.List;
 
 public interface IngredientService {
-    List<IngredientDto> getUserIngredients(String userEmail, String name, IngredientType type, Integer costGT, Integer costLT, String sortBy);
+    List<IngredientDto> getUserIngredients(String name, IngredientType type, Integer costGT, Integer costLT, String sortBy, String sortDirection);
 
-    boolean buyIngredient(String userEmail, IngredientDto ingredientDto);
+    boolean buyIngredient(IngredientDto ingredientDto);
 
-    boolean sellIngredient(String userEmail, IngredientDto ingredientDto);
+    boolean sellIngredient(IngredientDto ingredientDto);
 }

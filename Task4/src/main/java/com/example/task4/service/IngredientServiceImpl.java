@@ -5,8 +5,13 @@ import com.example.task4.entity.Ingredient;
 import com.example.task4.entity.IngredientType;
 import com.example.task4.entity.User;
 import com.example.task4.repository.IngredientRepository;
+import com.example.task4.repository.specification.IngredientSpecification;
 import com.example.task4.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,18 +22,27 @@ import java.util.stream.Collectors;
 public class IngredientServiceImpl implements IngredientService {
     private static final String DEFAULT_SORTING = "name";
 
-    private final IngredientRepository ingredientRepository;
-    private final UserRepository userRepository;
-
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, UserRepository userRepository) {
-        this.ingredientRepository = ingredientRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private IngredientRepository ingredientRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public List<IngredientDto> getUserIngredients(String userEmail, String name, IngredientType type, Integer costGT, Integer costLT, String sortBy) {
-        List<Ingredient> filteredIngredients =
-                ingredientRepository.findIngredientsByUsersEmailAndByNameAndByTypeAndByCost(userEmail, name, type, costGT, costLT, getSort(sortBy));
+    public List<IngredientDto> getUserIngredients(String name, IngredientType type, Integer costGT, Integer costLT, String sortBy, String sortDirection) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.DEFAULT_DIRECTION);
+        Specification<Ingredient> specification = Specification
+                .where(IngredientSpecification.filterByUsersEmail(userEmail))
+                .and(IngredientSpecification.filterByName(name))
+                .and(IngredientSpecification.filterByType(type))
+                .and(IngredientSpecification.filterByCostGT(costGT))
+                .and(IngredientSpecification.filterByCostLT(costLT));
+        List<Ingredient> filteredIngredients;
+        try {
+            filteredIngredients = ingredientRepository.findAll(specification, Sort.by(direction, sortBy));
+        } catch (PropertyReferenceException | IllegalArgumentException e) {
+            filteredIngredients = ingredientRepository.findAll(specification, Sort.by(DEFAULT_SORTING));
+        }
         return filteredIngredients.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -36,7 +50,8 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public boolean buyIngredient(String userEmail, IngredientDto ingredientDto) {
+    public boolean buyIngredient(IngredientDto ingredientDto) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.getUserByEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByName(ingredientDto.getName());
 
@@ -50,7 +65,8 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public boolean sellIngredient(String userEmail, IngredientDto ingredientDto) {
+    public boolean sellIngredient(IngredientDto ingredientDto) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.getUserByEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByName(ingredientDto.getName());
 
@@ -64,37 +80,4 @@ public class IngredientServiceImpl implements IngredientService {
     private IngredientDto convertToDto(Ingredient ingredient) {
         return new IngredientDto(ingredient.getName(), ingredient.getType(), ingredient.getCost());
     }
-
-    private Sort getSort(String sortString) {
-        Sort sort;
-        try {
-            switch (sortString) {
-                case "name":
-                    sort = Sort.by("name");
-                    break;
-                case "type":
-                    sort = Sort.by("type");
-                    break;
-                case "cost":
-                    sort = Sort.by("cost");
-                    break;
-                case "name desc":
-                    sort = Sort.by("name").descending();
-                    break;
-                case "type desc":
-                    sort = Sort.by("type").descending();
-                    break;
-                case "cost desc":
-                    sort = Sort.by("cost").descending();
-                    break;
-                default:
-                    sort = Sort.by(DEFAULT_SORTING);
-                    break;
-            }
-        } catch (NullPointerException e) {
-            sort = Sort.by(DEFAULT_SORTING);
-        }
-        return sort;
-    }
-
 }

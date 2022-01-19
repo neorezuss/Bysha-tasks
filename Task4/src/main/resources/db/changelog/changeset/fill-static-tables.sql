@@ -1,5 +1,9 @@
 --liquibase formatted sql
 --changeset aliaksei:fill-static-tables splitStatements:true endDelimiter:;
+INSERT INTO roles(name)
+VALUES ('ROLE_USER'),
+       ('ROLE_MANAGER'),
+       ('ROLE_ADMIN');
 INSERT INTO ingredients(name, type, cost)
 VALUES ('Iron', 'SOLID', 100),
        ('Water', 'LIQUID', 100),

@@ -8,25 +8,24 @@ import com.example.task4.entity.User;
 import com.example.task4.repository.ElixirRepository;
 import com.example.task4.repository.IngredientRepository;
 import com.example.task4.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class CraftServiceImpl implements CraftService {
-    private final ElixirRepository elixirRepository;
-    private final UserRepository userRepository;
-    private final IngredientRepository ingredientRepository;
-
-    public CraftServiceImpl(ElixirRepository elixirRepository, UserRepository userRepository, IngredientRepository ingredientRepository) {
-        this.elixirRepository = elixirRepository;
-        this.userRepository = userRepository;
-        this.ingredientRepository = ingredientRepository;
-    }
+    @Autowired
+    private ElixirRepository elixirRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
     @Override
     @Transactional
@@ -41,7 +40,7 @@ public class CraftServiceImpl implements CraftService {
             return false;
         }
         List<Elixir> elixirs = elixirRepository.findAll();
-        Optional<Elixir> elixirOptional = elixirs.stream().filter(item -> areListsEqual(item.getIngredients(), ingredients)).findFirst();
+        Optional<Elixir> elixirOptional = elixirs.stream().filter(item -> areCollectionsEqual(item.getIngredients(), ingredients)).findFirst();
         boolean canCraft = elixirOptional.isPresent() && user.getIngredients().containsAll(ingredients);
         if (canCraft) {
             Random random = new Random();
@@ -81,8 +80,8 @@ public class CraftServiceImpl implements CraftService {
         return canCraft;
     }
 
-    private boolean areListsEqual(List<Ingredient> list1, List<Ingredient> list2) {
-        return list1.containsAll(list2) && list2.containsAll(list1) && list1.size() == list2.size();
+    private boolean areCollectionsEqual(Set<Ingredient> set, List<Ingredient> list) {
+        return set.size() == list.size() && set.containsAll(list) && list.containsAll(set);
     }
 
     private Ingredient convertToEntity(IngredientDto ingredientDto) {

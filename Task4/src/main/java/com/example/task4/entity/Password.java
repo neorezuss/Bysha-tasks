@@ -3,24 +3,21 @@ package com.example.task4.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "passwords")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Role {
+public class Password {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Enumerated(EnumType.STRING)
-    private RoleEnum name;
-
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private List<User> users;
+    private String password;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
