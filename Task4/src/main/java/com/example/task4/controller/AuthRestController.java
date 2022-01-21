@@ -6,7 +6,7 @@ import com.example.task4.entity.User;
 import com.example.task4.security.AuthResponse;
 import com.example.task4.security.JwtProvider;
 import com.example.task4.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,18 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static java.util.Objects.isNull;
+
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthRestController {
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private JwtProvider jwtProvider;
+    private final AuthService authService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody LoginDto loginDto) {
         User user = authService.findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
-        if (user == null) {
+        if (isNull(user)) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         String token = jwtProvider.generateToken(user.getEmail());

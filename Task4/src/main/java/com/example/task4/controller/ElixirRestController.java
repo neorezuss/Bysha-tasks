@@ -2,29 +2,29 @@ package com.example.task4.controller;
 
 import com.example.task4.dto.ElixirDto;
 import com.example.task4.service.ElixirService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/elixirs")
+@RequiredArgsConstructor
 public class ElixirRestController {
-    @Autowired
-    private ElixirService elixirService;
+    private final ElixirService elixirService;
 
     @GetMapping
     public ResponseEntity<List<ElixirDto>> getUserElixirs(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer costGT,
-            @RequestParam(required = false) Integer costLT,
-            @RequestParam(required = false) Integer level,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String sortDirection
+            @RequestBody Map<String, String> filteringParams
     ) {
-        List<ElixirDto> elixirDtoList = elixirService.getUserElixirs(name, costGT, costLT, level, sort, sortDirection);
+        List<ElixirDto> elixirDtoList = elixirService.getUserElixirs(filteringParams);
         if (elixirDtoList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

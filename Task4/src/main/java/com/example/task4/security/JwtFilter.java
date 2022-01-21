@@ -1,6 +1,6 @@
 package com.example.task4.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,21 +13,22 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import static java.util.Objects.nonNull;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
     public static final String AUTHORIZATION = "Authorization";
+    public static final String AUTHORIZATION_PREFIX = "Bearer ";
 
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+    private final JwtProvider jwtProvider;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
-        if (token != null && jwtProvider.validateToken(token)) {
+        if (nonNull(token) && jwtProvider.validateToken(token)) {
             String userEmail = jwtProvider.getEmailFromToken(token);
             UserDetailsImpl customUserDetails = userDetailsServiceImpl.loadUserByUsername(userEmail);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
@@ -38,8 +39,8 @@ public class JwtFilter extends GenericFilterBean {
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearer = request.getHeader(AUTHORIZATION);
-        if (hasText(bearer) && bearer.startsWith("Bearer ")) {
-            return bearer.substring(7);
+        if (hasText(bearer) && bearer.startsWith(AUTHORIZATION_PREFIX)) {
+            return bearer.substring(AUTHORIZATION_PREFIX.length());
         }
         return null;
     }

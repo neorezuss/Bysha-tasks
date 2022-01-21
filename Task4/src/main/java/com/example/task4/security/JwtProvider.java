@@ -1,6 +1,8 @@
 package com.example.task4.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,6 @@ import java.util.Date;
 @Component
 @Log
 public class JwtProvider {
-
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
@@ -29,14 +30,6 @@ public class JwtProvider {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException expEx) {
-            log.severe("Token expired");
-        } catch (UnsupportedJwtException unsEx) {
-            log.severe("Unsupported jwt");
-        } catch (MalformedJwtException mjEx) {
-            log.severe("Malformed jwt");
-        } catch (SignatureException sEx) {
-            log.severe("Invalid signature");
         } catch (Exception e) {
             log.severe("invalid token");
         }

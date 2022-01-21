@@ -1,34 +1,35 @@
 package com.example.task4.service;
 
 import com.example.task4.dto.RegistrationDto;
-import com.example.task4.entity.*;
+import com.example.task4.entity.Ingredient;
+import com.example.task4.entity.Password;
+import com.example.task4.entity.Role;
+import com.example.task4.entity.RoleEnum;
+import com.example.task4.entity.User;
 import com.example.task4.repository.IngredientRepository;
 import com.example.task4.repository.PasswordRepository;
 import com.example.task4.repository.RoleRepository;
 import com.example.task4.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private static final boolean DEFAULT_ENABLED_STATUS = true;
     private static final int DEFAULT_COINS_COUNT = 100;
     private static List<Ingredient> startIngredients;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PasswordRepository passwordRepository;
-    @Autowired
-    private IngredientRepository ingredientRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordRepository passwordRepository;
+    private final IngredientRepository ingredientRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
@@ -68,12 +69,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            Password userPassword = passwordRepository.findByUser_Email(email).get();
-            if (passwordEncoder.matches(password, userPassword.getPassword())) {
-                return user.get();
-            }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with email:" + email));
+        Password userPassword = passwordRepository.findByUser_Email(email).get();
+        if (passwordEncoder.matches(password, userPassword.getPassword())) {
+            return user;
         }
         return null;
     }

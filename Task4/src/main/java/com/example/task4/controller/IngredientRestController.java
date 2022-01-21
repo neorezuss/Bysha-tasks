@@ -1,31 +1,31 @@
 package com.example.task4.controller;
 
 import com.example.task4.dto.IngredientDto;
-import com.example.task4.entity.IngredientType;
 import com.example.task4.service.IngredientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ingredients")
+@RequiredArgsConstructor
 public class IngredientRestController {
-    @Autowired
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
 
     @GetMapping
     public ResponseEntity<List<IngredientDto>> getUserIngredients(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) IngredientType type,
-            @RequestParam(required = false) Integer costGT,
-            @RequestParam(required = false) Integer costLT,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String sortDirection
+            @RequestBody Map<String, String> filteringParams
     ) {
-        List<IngredientDto> ingredientDtoList = ingredientService.getUserIngredients(name, type, costGT, costLT, sort, sortDirection);
+        List<IngredientDto> ingredientDtoList = ingredientService.getUserIngredients(filteringParams);
         if (ingredientDtoList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

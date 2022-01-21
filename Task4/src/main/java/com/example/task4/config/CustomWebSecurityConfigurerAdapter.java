@@ -2,7 +2,7 @@ package com.example.task4.config;
 
 import com.example.task4.security.JwtFilter;
 import com.example.task4.security.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,13 +18,11 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final DataSource dataSource;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -32,15 +30,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 and()
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery(
-                        "select email, password,enabled "
-                                + "from users INNER JOIN passwords ON users.id=user_id"
-                                + "where and email = ?")
-                .authoritiesByUsernameQuery(
-                        "select email, name "
-                                + "from users INNER JOIN user_role ON users.id=user_id"
-                                + "INNER JOIN roles ON roles.id=role_id"
-                                + "where email = ?");
+                .usersByUsernameQuery(getUsersQuery())
+                .authoritiesByUsernameQuery(getRolesQuery());
     }
 
     @Override
@@ -60,5 +51,18 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private String getUsersQuery() {
+        return "select email, password,enabled "
+                + "from users INNER JOIN passwords ON users.id=user_id"
+                + "where and email = ?";
+    }
+
+    private String getRolesQuery() {
+        return "select email, name "
+                + "from users INNER JOIN user_role ON users.id=user_id"
+                + "INNER JOIN roles ON roles.id=role_id"
+                + "where email = ?";
     }
 }

@@ -4,9 +4,9 @@ import com.example.task4.dto.ElixirDto;
 import com.example.task4.entity.Elixir;
 import com.example.task4.entity.User;
 import com.example.task4.repository.ElixirRepository;
-import com.example.task4.repository.specification.ElixirSpecification;
 import com.example.task4.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.task4.repository.specification.ElixirSpecification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -15,20 +15,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Service
+@RequiredArgsConstructor
 public class ElixirServiceImpl implements ElixirService {
     private static final String DEFAULT_SORTING = "name";
 
-    @Autowired
-    private ElixirRepository elixirRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final ElixirRepository elixirRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public List<ElixirDto> getUserElixirs(String name, Integer costGT, Integer costLT, Integer level, String sortBy, String sortDirection) {
+    public List<ElixirDto> getUserElixirs(Map<String, String> filteringParams) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String name = filteringParams.get("name");
+        Integer costGT = nonNull(filteringParams.get("costGT")) ? Integer.valueOf(filteringParams.get("costGT")) : null;
+        Integer costLT = nonNull(filteringParams.get("costLT")) ? Integer.valueOf(filteringParams.get("costLT")) : null;
+        Integer level = nonNull(filteringParams.get("level")) ? Integer.valueOf(filteringParams.get("level")) : null;
+        String sortBy = filteringParams.get("sortBy");
+        String sortDirection = filteringParams.get("sortDirection");
+
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.DEFAULT_DIRECTION);
         Specification<Elixir> specification = Specification
                 .where(ElixirSpecification.filterByUsersEmail(userEmail))
@@ -36,6 +45,7 @@ public class ElixirServiceImpl implements ElixirService {
                 .and(ElixirSpecification.filterByCostGT(costGT))
                 .and(ElixirSpecification.filterByCostLT(costLT))
                 .and(ElixirSpecification.filterByLevel(level));
+
         List<Elixir> filteredElixirs;
         try {
             filteredElixirs = elixirRepository.findAll(specification, Sort.by(direction, sortBy));
@@ -54,8 +64,9 @@ public class ElixirServiceImpl implements ElixirService {
         User user = userRepository.getUserByEmail(userEmail);
         Elixir elixir = elixirRepository.getElixirByName(elixirDto.getName());
 
-        boolean canSell = user.getElixirs().remove(elixir);
+        boolean canSell = nonNull(elixir) && user.getElixirs().contains(elixir);
         if (canSell) {
+            user.getElixirs().remove(elixir);
             user.setCoins(user.getCoins() + elixir.getCost());
         }
         return canSell;

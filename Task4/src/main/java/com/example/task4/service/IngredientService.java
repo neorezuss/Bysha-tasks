@@ -1,12 +1,12 @@
 package com.example.task4.service;
 
 import com.example.task4.dto.IngredientDto;
-import com.example.task4.entity.IngredientType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IngredientService {
-    List<IngredientDto> getUserIngredients(String name, IngredientType type, Integer costGT, Integer costLT, String sortBy, String sortDirection);
+    List<IngredientDto> getUserIngredients(Map<String, String> filteringParams);
 
     boolean buyIngredient(IngredientDto ingredientDto);
 

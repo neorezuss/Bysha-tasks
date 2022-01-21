@@ -47,13 +47,13 @@ CREATE TABLE elixir_ingredient
 );
 CREATE TABLE user_ingredient
 (
-    user_ingredient_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     user_id            INTEGER NOT NULL REFERENCES users,
     ingredient_id      INTEGER NOT NULL REFERENCES ingredients
 );
 CREATE TABLE user_elixir
 (
-    user_elixir_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     user_id        INTEGER NOT NULL REFERENCES users,
     elixir_id      INTEGER NOT NULL REFERENCES elixirs
 );

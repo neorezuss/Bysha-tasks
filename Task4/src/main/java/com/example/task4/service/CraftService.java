@@ -6,7 +6,7 @@ import com.example.task4.dto.IngredientDto;
 import java.util.List;
 
 public interface CraftService {
-    boolean craftByIngredients(String userEmail, List<IngredientDto> ingredientDtoList);
+    boolean craftByIngredients(List<IngredientDto> ingredientDtoList);
 
-    boolean craftByRecipe(String userEmail, ElixirDto elixirDto);
+    boolean craftByRecipe(ElixirDto elixirDto);
 }
