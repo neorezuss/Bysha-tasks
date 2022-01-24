@@ -1,5 +1,6 @@
-DROP TABLE IF EXISTS user_elixir;
-DROP TABLE IF EXISTS user_ingredient;
+DROP TABLE IF EXISTS user_inventory_elixir;
+DROP TABLE IF EXISTS user_inventory_ingredient;
+DROP TABLE IF EXISTS user_inventories;
 DROP TABLE IF EXISTS elixir_ingredient;
 DROP TABLE IF EXISTS elixirs;
 DROP TABLE IF EXISTS ingredients;
@@ -33,6 +34,12 @@ CREATE TABLE user_role
     user_id INTEGER NOT NULL REFERENCES users,
     role_id INTEGER NOT NULL REFERENCES roles
 );
+CREATE TABLE user_inventories
+(
+    id      BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users,
+    coins   INTEGER NOT NULL DEFAULT 100
+);
 CREATE TABLE ingredients
 (
     id   BIGSERIAL PRIMARY KEY,
@@ -53,17 +60,17 @@ CREATE TABLE elixir_ingredient
     ingredient_id INTEGER NOT NULL REFERENCES ingredients,
     PRIMARY KEY (elixir_id, ingredient_id)
 );
-CREATE TABLE user_ingredient
+CREATE TABLE user_inventory_ingredient
 (
-    user_ingredient_id BIGSERIAL PRIMARY KEY,
-    user_id            INTEGER NOT NULL REFERENCES users,
-    ingredient_id      INTEGER NOT NULL REFERENCES ingredients
+    id                BIGSERIAL PRIMARY KEY,
+    user_inventory_id INTEGER NOT NULL REFERENCES user_inventories,
+    ingredient_id     INTEGER NOT NULL REFERENCES ingredients
 );
-CREATE TABLE user_elixir
+CREATE TABLE user_inventory_elixir
 (
-    user_elixir_id BIGSERIAL PRIMARY KEY,
-    user_id        INTEGER NOT NULL REFERENCES users,
-    elixir_id      INTEGER NOT NULL REFERENCES elixirs
+    id                BIGSERIAL PRIMARY KEY,
+    user_inventory_id INTEGER NOT NULL REFERENCES user_inventories,
+    elixir_id         INTEGER NOT NULL REFERENCES elixirs
 );
 
 INSERT INTO roles(name)
@@ -89,16 +96,19 @@ VALUES (1, 1),
        (3, 3),
        (3, 4);
 
-INSERT INTO users(name, email, enabled, coins)
-VALUES ('validUser', 'validUser', true, 10000),
-       ('invalidUser', 'invalidUser', true, 0);
+INSERT INTO users(name, email, enabled)
+VALUES ('validUser', 'validUser', true),
+       ('invalidUser', 'invalidUser', true);
+INSERT INTO user_inventories(user_id, coins)
+VALUES (1, 10000),
+       (2, 0);
 INSERT INTO passwords(user_id, password)
 VALUES(1, '$2a$10$sV32PjU5.1yGorVcVFZuieDb43LVQtPmlVhREgBLuq8axOa7nrkkG'),
       (2, '$2a$10$d7mMHb3zTWQxPXR1oswfduFR3zrFWnsPRn5TIyQTWP.V.uvW.pEhu');
 INSERT INTO user_role(user_id, role_id)
 VALUES(1, 1),
       (2, 1);
-INSERT INTO user_ingredient(user_id, ingredient_id)
+INSERT INTO user_inventory_ingredient(user_inventory_id, ingredient_id)
 VALUES(1, 1),
       (1, 1),
       (1, 2),
@@ -107,7 +117,7 @@ VALUES(1, 1),
       (1, 3),
       (1, 4),
       (1, 4);
-INSERT INTO user_elixir(user_id, elixir_id)
+INSERT INTO user_inventory_elixir(user_inventory_id, elixir_id)
 VALUES(1, 1),
       (1, 1),
       (1, 2),

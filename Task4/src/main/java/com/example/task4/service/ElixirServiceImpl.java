@@ -2,9 +2,9 @@ package com.example.task4.service;
 
 import com.example.task4.dto.ElixirDto;
 import com.example.task4.entity.Elixir;
-import com.example.task4.entity.User;
+import com.example.task4.entity.UserInventory;
 import com.example.task4.repository.ElixirRepository;
-import com.example.task4.repository.UserRepository;
+import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.specification.ElixirSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -26,7 +26,7 @@ public class ElixirServiceImpl implements ElixirService {
     private static final String DEFAULT_SORTING = "name";
 
     private final ElixirRepository elixirRepository;
-    private final UserRepository userRepository;
+    private final UserInventoryRepository userInventoryRepository;
 
     @Override
     public List<ElixirDto> getUserElixirs(Map<String, String> filteringParams) {
@@ -61,13 +61,13 @@ public class ElixirServiceImpl implements ElixirService {
     @Transactional
     public boolean sellElixir(ElixirDto elixirDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.getUserByEmail(userEmail);
+        UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Elixir elixir = elixirRepository.getElixirByName(elixirDto.getName());
 
-        boolean canSell = nonNull(elixir) && user.getElixirs().contains(elixir);
+        boolean canSell = nonNull(elixir) && userInventory.getElixirs().contains(elixir);
         if (canSell) {
-            user.getElixirs().remove(elixir);
-            user.setCoins(user.getCoins() + elixir.getCost());
+            userInventory.getElixirs().remove(elixir);
+            userInventory.setCoins(userInventory.getCoins() + elixir.getCost());
         }
         return canSell;
     }

@@ -46,5 +46,5 @@ public class Elixir {
 
     @ManyToMany(mappedBy = "elixirs")
     @JsonIgnore
-    private List<User> users;
+    private List<UserInventory> userInventories;
 }

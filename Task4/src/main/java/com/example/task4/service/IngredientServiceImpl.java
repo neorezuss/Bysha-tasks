@@ -3,9 +3,9 @@ package com.example.task4.service;
 import com.example.task4.dto.IngredientDto;
 import com.example.task4.entity.Ingredient;
 import com.example.task4.entity.IngredientType;
-import com.example.task4.entity.User;
+import com.example.task4.entity.UserInventory;
 import com.example.task4.repository.IngredientRepository;
-import com.example.task4.repository.UserRepository;
+import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.specification.IngredientSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -27,7 +27,7 @@ public class IngredientServiceImpl implements IngredientService {
     private static final String DEFAULT_SORTING = "name";
 
     private final IngredientRepository ingredientRepository;
-    private final UserRepository userRepository;
+    private final UserInventoryRepository userInventoryRepository;
 
     @Override
     public List<IngredientDto> getUserIngredients(Map<String, String> filteringParams) {
@@ -62,13 +62,13 @@ public class IngredientServiceImpl implements IngredientService {
     @Transactional
     public boolean buyIngredient(IngredientDto ingredientDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.getUserByEmail(userEmail);
+        UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByName(ingredientDto.getName());
 
-        boolean canBuy = nonNull(ingredient) && user.getCoins() >= ingredient.getCost();
+        boolean canBuy = nonNull(ingredient) && userInventory.getCoins() >= ingredient.getCost();
         if (canBuy) {
-            user.setCoins(user.getCoins() - ingredient.getCost());
-            user.getIngredients().add(ingredient);
+            userInventory.setCoins(userInventory.getCoins() - ingredient.getCost());
+            userInventory.getIngredients().add(ingredient);
         }
         return canBuy;
     }
@@ -77,13 +77,13 @@ public class IngredientServiceImpl implements IngredientService {
     @Transactional
     public boolean sellIngredient(IngredientDto ingredientDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.getUserByEmail(userEmail);
+        UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByName(ingredientDto.getName());
 
-        boolean canSell = nonNull(ingredient) && user.getIngredients().contains(ingredient);
+        boolean canSell = nonNull(ingredient) && userInventory.getIngredients().contains(ingredient);
         if (canSell) {
-            user.getIngredients().remove(ingredient);
-            user.setCoins(user.getCoins() + ingredient.getCost());
+            userInventory.getIngredients().remove(ingredient);
+            userInventory.setCoins(userInventory.getCoins() + ingredient.getCost());
         }
         return canSell;
     }

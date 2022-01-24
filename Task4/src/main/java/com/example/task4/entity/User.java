@@ -36,23 +36,7 @@ public class User {
     @JsonIgnore
     @Singular
     private List<Role> roles;
-    private int coins;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_ingredient",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
-    @JsonIgnore
-    private List<Ingredient> ingredients;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_elixir",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "elixir_id")
-    )
-    @JsonIgnore
-    private List<Elixir> elixirs;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserInventory userInventory;
 }

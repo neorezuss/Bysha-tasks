@@ -5,8 +5,7 @@ CREATE TABLE users
     id      BIGSERIAL PRIMARY KEY,
     name    VARCHAR(200) NOT NULL UNIQUE,
     email   VARCHAR(255) NOT NULL UNIQUE,
-    enabled BOOLEAN      NOT NULL DEFAULT true,
-    coins   INTEGER      NOT NULL DEFAULT 100
+    enabled BOOLEAN      NOT NULL DEFAULT true
 );
 CREATE TABLE passwords
 (
@@ -24,6 +23,12 @@ CREATE TABLE user_role
     id      BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users,
     role_id INTEGER NOT NULL REFERENCES roles
+);
+CREATE TABLE user_inventories
+(
+    id      BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users,
+    coins   INTEGER NOT NULL DEFAULT 100
 );
 CREATE TABLE ingredients
 (
@@ -45,21 +50,22 @@ CREATE TABLE elixir_ingredient
     ingredient_id INTEGER NOT NULL REFERENCES ingredients,
     PRIMARY KEY (elixir_id, ingredient_id)
 );
-CREATE TABLE user_ingredient
+CREATE TABLE user_inventory_ingredient
 (
-    id BIGSERIAL PRIMARY KEY,
-    user_id            INTEGER NOT NULL REFERENCES users,
-    ingredient_id      INTEGER NOT NULL REFERENCES ingredients
+    id                BIGSERIAL PRIMARY KEY,
+    user_inventory_id INTEGER NOT NULL REFERENCES user_inventories,
+    ingredient_id     INTEGER NOT NULL REFERENCES ingredients
 );
-CREATE TABLE user_elixir
+CREATE TABLE user_inventory_elixir
 (
-    id BIGSERIAL PRIMARY KEY,
-    user_id        INTEGER NOT NULL REFERENCES users,
-    elixir_id      INTEGER NOT NULL REFERENCES elixirs
+    id                BIGSERIAL PRIMARY KEY,
+    user_inventory_id INTEGER NOT NULL REFERENCES user_inventories,
+    elixir_id         INTEGER NOT NULL REFERENCES elixirs
 );
---rollback DROP TABLE user_elixir
---rollback DROP TABLE user_ingredient
+--rollback DROP TABLE user_inventory_ingredient
+--rollback DROP TABLE user_inventory_elixir
 --rollback DROP TABLE elixir_ingredient
+--rollback DROP TABLE user_inventories
 --rollback DROP TABLE elixirs
 --rollback DROP TABLE ingredients
 --rollback DROP TABLE user_role

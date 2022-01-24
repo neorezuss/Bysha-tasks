@@ -8,7 +8,7 @@ import static java.util.Objects.isNull;
 
 public class ElixirSpecification {
     public static Specification<Elixir> filterByUsersEmail(String email) {
-        return isNull(email) ? null : (elixir, cq, cb) -> cb.equal(elixir.join("users").get("email"), email);
+        return isNull(email) ? null : (elixir, cq, cb) -> cb.equal(elixir.join("userInventories").join("user").get("email"), email);
     }
 
     public static Specification<Elixir> filterByName(String name) {

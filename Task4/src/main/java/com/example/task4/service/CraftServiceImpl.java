@@ -4,10 +4,10 @@ import com.example.task4.dto.ElixirDto;
 import com.example.task4.dto.IngredientDto;
 import com.example.task4.entity.Elixir;
 import com.example.task4.entity.Ingredient;
-import com.example.task4.entity.User;
+import com.example.task4.entity.UserInventory;
 import com.example.task4.repository.ElixirRepository;
 import com.example.task4.repository.IngredientRepository;
-import com.example.task4.repository.UserRepository;
+import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.specification.ElixirSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,7 +29,7 @@ public class CraftServiceImpl implements CraftService {
     private static final int MAX_RECIPE_SIZE = 3;
 
     private final ElixirRepository elixirRepository;
-    private final UserRepository userRepository;
+    private final UserInventoryRepository userInventoryRepository;
     private final IngredientRepository ingredientRepository;
 
     @Override
@@ -40,7 +40,7 @@ public class CraftServiceImpl implements CraftService {
         }
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.getUserByEmail(userEmail);
+        UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         List<Ingredient> ingredients = ingredientDtoList.stream()
                 .map(this::convertToEntity)
@@ -56,17 +56,17 @@ public class CraftServiceImpl implements CraftService {
                 .filter(item -> areCollectionsEqual(item.getIngredients(), ingredients))
                 .findFirst().orElse(null);
 
-        boolean canCraft = nonNull(elixir) && user.getIngredients().containsAll(ingredients);
+        boolean canCraft = nonNull(elixir) && userInventory.getIngredients().containsAll(ingredients);
 
         if (canCraft) {
             Random random = new Random();
             ingredients.forEach(
                     item -> {
                         if (random.nextInt(100) <= item.getType().getConsumeProbability())
-                            user.getIngredients().remove(item);
+                            userInventory.getIngredients().remove(item);
                     }
             );
-            user.getElixirs().add(elixir);
+            userInventory.getElixirs().add(elixir);
         }
         return canCraft;
     }
@@ -75,21 +75,21 @@ public class CraftServiceImpl implements CraftService {
     @Transactional
     public boolean craftByRecipe(ElixirDto elixirDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.getUserByEmail(userEmail);
+        UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         Elixir elixir = convertToEntity(elixirDto);
 
-        boolean canCraft = nonNull(elixir) && user.getIngredients().containsAll(elixir.getIngredients());
+        boolean canCraft = nonNull(elixir) && userInventory.getIngredients().containsAll(elixir.getIngredients());
 
         if (canCraft) {
             Random random = new Random();
             elixir.getIngredients().forEach(
                     item -> {
                         if (random.nextInt(100) <= item.getType().getConsumeProbability())
-                            user.getIngredients().remove(item);
+                            userInventory.getIngredients().remove(item);
                     }
             );
-            user.getElixirs().add(elixir);
+            userInventory.getElixirs().add(elixir);
         }
         return canCraft;
     }

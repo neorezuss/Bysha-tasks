@@ -6,9 +6,11 @@ import com.example.task4.entity.Password;
 import com.example.task4.entity.Role;
 import com.example.task4.entity.RoleEnum;
 import com.example.task4.entity.User;
+import com.example.task4.entity.UserInventory;
 import com.example.task4.repository.IngredientRepository;
 import com.example.task4.repository.PasswordRepository;
 import com.example.task4.repository.RoleRepository;
+import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserInventoryRepository userInventoryRepository;
     private final PasswordRepository passwordRepository;
     private final IngredientRepository ingredientRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,14 +50,18 @@ public class AuthServiceImpl implements AuthService {
                 .email(registrationDto.getEmail())
                 .enabled(DEFAULT_ENABLED_STATUS)
                 .role(defaultRole)
-                .coins(DEFAULT_COINS_COUNT)
-                .ingredients(startIngredients)
                 .build();
         Password password = Password.builder()
                 .user(user)
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .build();
         passwordRepository.save(password);
+        UserInventory userInventory = UserInventory.builder()
+                .user(user)
+                .coins(DEFAULT_COINS_COUNT)
+                .ingredients(startIngredients)
+                .build();
+        userInventoryRepository.save(userInventory);
     }
 
     @Override

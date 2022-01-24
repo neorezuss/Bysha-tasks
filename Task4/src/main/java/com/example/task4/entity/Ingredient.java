@@ -42,5 +42,5 @@ public class Ingredient {
 
     @ManyToMany(mappedBy = "ingredients")
     @JsonIgnore
-    private List<User> users;
+    private List<UserInventory> userInventories;
 }

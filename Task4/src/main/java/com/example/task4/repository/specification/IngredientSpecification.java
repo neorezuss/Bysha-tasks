@@ -8,7 +8,7 @@ import static java.util.Objects.isNull;
 
 public class IngredientSpecification {
     public static Specification<Ingredient> filterByUsersEmail(String email) {
-        return isNull(email) ? null : (ingredient, cq, cb) -> cb.equal(ingredient.join("users").get("email"), email);
+        return isNull(email) ? null : (ingredient, cq, cb) -> cb.equal(ingredient.join("userInventories").join("user").get("email"), email);
     }
 
     public static Specification<Ingredient> filterByName(String name) {
