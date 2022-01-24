@@ -37,7 +37,7 @@ CREATE TABLE elixirs
     id    BIGSERIAL PRIMARY KEY,
     name  VARCHAR(100) NOT NULL UNIQUE,
     cost  INTEGER      NOT NULL CHECK (cost >= 0),
-    level INTEGER      NOT NULL CHECK (cost > 0)
+    level INTEGER      NOT NULL CHECK (level > 0)
 );
 CREATE TABLE elixir_ingredient
 (

@@ -25,6 +25,9 @@ import static java.util.Objects.nonNull;
 @Service
 @RequiredArgsConstructor
 public class CraftServiceImpl implements CraftService {
+    private static final int MIN_RECIPE_SIZE = 2;
+    private static final int MAX_RECIPE_SIZE = 3;
+
     private final ElixirRepository elixirRepository;
     private final UserRepository userRepository;
     private final IngredientRepository ingredientRepository;
@@ -32,7 +35,7 @@ public class CraftServiceImpl implements CraftService {
     @Override
     @Transactional
     public boolean craftByIngredients(List<IngredientDto> ingredientDtoList) {
-        if (ingredientDtoList.size() > 3 || ingredientDtoList.size() < 2) {
+        if (ingredientDtoList.size() > MAX_RECIPE_SIZE || ingredientDtoList.size() < MIN_RECIPE_SIZE) {
             return false;
         }
 
@@ -54,6 +57,7 @@ public class CraftServiceImpl implements CraftService {
                 .findFirst().orElse(null);
 
         boolean canCraft = nonNull(elixir) && user.getIngredients().containsAll(ingredients);
+
         if (canCraft) {
             Random random = new Random();
             ingredients.forEach(
