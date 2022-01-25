@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email:" + email));
-        Password userPassword = passwordRepository.findByUser_Email(email).get();
+        Password userPassword = passwordRepository.findByUserEmail(email);
         if (passwordEncoder.matches(password, userPassword.getPassword())) {
             return user;
         }
