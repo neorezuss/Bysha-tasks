@@ -46,10 +46,8 @@ public class CraftServiceImpl implements CraftService {
                 .map(this::convertToEntity)
                 .collect(Collectors.toList());
 
-        Specification<Elixir> specification = Specification
-                .where(ElixirSpecification.filterByIngredient(ingredients.get(0)))
-                .and(ElixirSpecification.filterByIngredient(ingredients.get(1)))
-                .and(ElixirSpecification.filterByIngredient(ingredients.size() > 2 ? ingredients.get(2) : null));
+        Specification<Elixir> specification = Specification.where(null);
+        ingredients.forEach(i -> specification.and(ElixirSpecification.filterByIngredient(i)));
 
         List<Elixir> elixirs = elixirRepository.findAll(specification);
         Elixir elixir = elixirs.stream()
