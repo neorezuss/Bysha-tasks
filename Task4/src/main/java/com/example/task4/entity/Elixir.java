@@ -17,7 +17,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "elixirs")
@@ -42,7 +41,7 @@ public class Elixir {
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     @JsonIgnore
-    private Set<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     @ManyToMany(mappedBy = "elixirs")
     @JsonIgnore

@@ -2,11 +2,12 @@ package com.example.task4.service;
 
 import com.example.task4.dto.ElixirDto;
 import com.example.task4.dto.IngredientDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface CraftService {
-    boolean craftByIngredients(List<IngredientDto> ingredientDtoList);
+    ResponseEntity<String> craftByIngredients(List<IngredientDto> ingredientDtoList);
 
-    boolean craftByRecipe(ElixirDto elixirDto);
+    ResponseEntity<String> craftByRecipe(ElixirDto elixirDto);
 }

@@ -11,16 +11,19 @@ import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.specification.ElixirSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +37,9 @@ public class CraftServiceImpl implements CraftService {
 
     @Override
     @Transactional
-    public boolean craftByIngredients(List<IngredientDto> ingredientDtoList) {
+    public ResponseEntity<String> craftByIngredients(List<IngredientDto> ingredientDtoList) {
         if (ingredientDtoList.size() > MAX_RECIPE_SIZE || ingredientDtoList.size() < MIN_RECIPE_SIZE) {
-            return false;
+            return new ResponseEntity<>("Wrong recipe size! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
         }
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -46,54 +49,67 @@ public class CraftServiceImpl implements CraftService {
                 .map(this::convertToEntity)
                 .collect(Collectors.toList());
 
-        Specification<Elixir> specification = Specification.where(null);
-        ingredients.forEach(i -> specification.and(ElixirSpecification.filterByIngredient(i)));
+        Elixir elixir = getElixirByIngredients(ingredients);
 
-        List<Elixir> elixirs = elixirRepository.findAll(specification);
-        Elixir elixir = elixirs.stream()
-                .filter(item -> areCollectionsEqual(item.getIngredients(), ingredients))
-                .findFirst().orElse(null);
-
-        boolean canCraft = nonNull(elixir) && userInventory.getIngredients().containsAll(ingredients);
-
-        if (canCraft) {
-            Random random = new Random();
-            ingredients.forEach(
-                    item -> {
-                        if (random.nextInt(100) <= item.getType().getConsumeProbability())
-                            userInventory.getIngredients().remove(item);
-                    }
-            );
-            userInventory.getElixirs().add(elixir);
+        if (isNull(elixir)) {
+            return new ResponseEntity<>("There is no elixir with this recipe! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
         }
-        return canCraft;
+        if (!userInventory.getIngredients().containsAll(ingredients)) {
+            return new ResponseEntity<>("You don’t have needed ingredients! Elixir craft is failed!", HttpStatus.CONFLICT);
+        }
+
+        craftElixir(userInventory, ingredients, elixir);
+        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
     }
 
     @Override
     @Transactional
-    public boolean craftByRecipe(ElixirDto elixirDto) {
+    public ResponseEntity<String> craftByRecipe(ElixirDto elixirDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         Elixir elixir = convertToEntity(elixirDto);
 
-        boolean canCraft = nonNull(elixir) && userInventory.getIngredients().containsAll(elixir.getIngredients());
-
-        if (canCraft) {
-            Random random = new Random();
-            elixir.getIngredients().forEach(
-                    item -> {
-                        if (random.nextInt(100) <= item.getType().getConsumeProbability())
-                            userInventory.getIngredients().remove(item);
-                    }
-            );
-            userInventory.getElixirs().add(elixir);
+        if (isNull(elixir)) {
+            return new ResponseEntity<>("There is no elixir with this recipe! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
         }
-        return canCraft;
+        if (!userInventory.getIngredients().containsAll(elixir.getIngredients())) {
+            return new ResponseEntity<>("You don’t have needed ingredients! Elixir craft is failed!", HttpStatus.CONFLICT);
+        }
+
+        craftElixir(userInventory, elixir.getIngredients(), elixir);
+        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
     }
 
-    private boolean areCollectionsEqual(Set<Ingredient> set, List<Ingredient> list) {
-        return set.size() == list.size() && set.containsAll(list) && list.containsAll(set);
+    private Elixir getElixirByIngredients(List<Ingredient> ingredients) {
+        Specification<Elixir> specification = Specification.where(null);
+        ingredients.forEach(i -> specification.and(ElixirSpecification.filterByIngredient(i)));
+
+        List<Elixir> elixirs = elixirRepository.findAll(specification);
+        return elixirs.stream()
+                .filter(item -> areListsEqual(item.getIngredients(), ingredients))
+                .findFirst().orElse(null);
+    }
+
+    private boolean areListsEqual(List<Ingredient> list1, List<Ingredient> list2) {
+        List<Ingredient> sortedList1 = list1.stream()
+                .sorted(Comparator.comparing(Ingredient::getName))
+                .collect(Collectors.toList());
+        List<Ingredient> sortedList2 = list2.stream()
+                .sorted(Comparator.comparing(Ingredient::getName))
+                .collect(Collectors.toList());
+        return sortedList1.equals(sortedList2);
+    }
+
+    private void craftElixir(UserInventory userInventory, Collection<Ingredient> ingredients, Elixir elixir) {
+        Random random = new Random();
+        ingredients.forEach(
+                item -> {
+                    if (random.nextInt(100) <= item.getType().getConsumeProbability())
+                        userInventory.getIngredients().remove(item);
+                }
+        );
+        userInventory.getElixirs().add(elixir);
     }
 
     private Ingredient convertToEntity(IngredientDto ingredientDto) {

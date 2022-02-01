@@ -1,14 +1,12 @@
 package com.example.task4.service;
 
+import com.example.task4.dto.LoginDto;
 import com.example.task4.dto.RegistrationDto;
-import com.example.task4.entity.User;
+import com.example.task4.security.AuthResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    void saveUser(RegistrationDto registrationDto);
+    ResponseEntity<AuthResponse> authenticateUser(LoginDto loginDto);
 
-    boolean existsByEmail(String email);
-
-    boolean existsByName(String name);
-
-    User findByEmailAndPassword(String email, String password);
+    ResponseEntity<String> registerUser(RegistrationDto registrationDto);
 }

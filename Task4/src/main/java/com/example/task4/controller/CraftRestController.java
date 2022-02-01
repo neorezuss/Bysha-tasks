@@ -4,7 +4,6 @@ import com.example.task4.dto.ElixirDto;
 import com.example.task4.dto.IngredientDto;
 import com.example.task4.service.CraftService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,19 +22,13 @@ public class CraftRestController {
     public ResponseEntity<String> craftByIngredients(
             @RequestBody List<IngredientDto> ingredientDtoList
     ) {
-        if (!craftService.craftByIngredients(ingredientDtoList)) {
-            return new ResponseEntity<>("Elixir craft is failed!", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
+        return craftService.craftByIngredients(ingredientDtoList);
     }
 
     @PostMapping("/recipe")
     public ResponseEntity<String> craftByRecipe(
             @RequestBody ElixirDto elixirDto
     ) {
-        if (!craftService.craftByRecipe(elixirDto)) {
-            return new ResponseEntity<>("Elixir craft is failed!", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
+        return craftService.craftByRecipe(elixirDto);
     }
 }
