@@ -20,6 +20,14 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    private final static String USERS_QUERY = "select email, password,enabled "
+                                            + "from users INNER JOIN passwords ON users.id=user_id"
+                                            + "where and email = ?";
+    private final static String ROLES_QUERY = "select email, name "
+                                            + "from users INNER JOIN user_role ON users.id=user_id"
+                                            + "INNER JOIN roles ON roles.id=role_id"
+                                            + "where email = ?";
+
     private final DataSource dataSource;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtFilter jwtFilter;
@@ -30,8 +38,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 and()
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery(getUsersQuery())
-                .authoritiesByUsernameQuery(getRolesQuery());
+                .usersByUsernameQuery(USERS_QUERY)
+                .authoritiesByUsernameQuery(ROLES_QUERY);
     }
 
     @Override
@@ -51,18 +59,5 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    private String getUsersQuery() {
-        return "select email, password,enabled "
-                + "from users INNER JOIN passwords ON users.id=user_id"
-                + "where and email = ?";
-    }
-
-    private String getRolesQuery() {
-        return "select email, name "
-                + "from users INNER JOIN user_role ON users.id=user_id"
-                + "INNER JOIN roles ON roles.id=role_id"
-                + "where email = ?";
     }
 }
