@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -54,12 +52,8 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<AuthResponse> authenticateUser(LoginDto loginDto) {
         User user = findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
 
-        if (isNull(user)) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-
         String token = jwtProvider.generateToken(user.getEmail());
-        return new ResponseEntity(new AuthResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
 
     @Override
@@ -105,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
     private User findByEmailAndPassword(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email:" + email));
+                        new UsernameNotFoundException("User not found with email: " + email));
         Password userPassword = passwordRepository.findByUserEmail(email);
         if (passwordEncoder.matches(password, userPassword.getPassword())) {
             return user;
