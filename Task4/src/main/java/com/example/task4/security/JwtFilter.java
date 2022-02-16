@@ -3,6 +3,8 @@ package com.example.task4.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -23,14 +25,14 @@ public class JwtFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_PREFIX = "Bearer ";
 
     private final JwtProvider jwtProvider;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
         if (nonNull(token) && jwtProvider.validateToken(token)) {
             String userEmail = jwtProvider.getEmailFromToken(token);
-            UserDetailsImpl customUserDetails = userDetailsServiceImpl.loadUserByUsername(userEmail);
+            UserDetails customUserDetails = userDetailsService.loadUserByUsername(userEmail);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

@@ -1,6 +1,7 @@
 package com.example.task4.service;
 
 import com.example.task4.dto.LoginDto;
+import com.example.task4.dto.RefreshTokenDto;
 import com.example.task4.dto.RegistrationDto;
 import com.example.task4.entity.Ingredient;
 import com.example.task4.entity.Password;
@@ -16,8 +17,6 @@ import com.example.task4.repository.UserRepository;
 import com.example.task4.security.AuthResponse;
 import com.example.task4.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,25 +48,35 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<AuthResponse> authenticateUser(LoginDto loginDto) {
+    public AuthResponse authenticateUser(LoginDto loginDto) {
         User user = findByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
-
-        String token = jwtProvider.generateToken(user.getEmail());
-        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
+        String accessToken = jwtProvider.generateAccessToken(user.getEmail(), user.getRoles());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        return new AuthResponse(accessToken, refreshToken);
     }
 
     @Override
-    public ResponseEntity<String> registerUser(RegistrationDto registrationDto) {
+    public RegistrationDto registerUser(RegistrationDto registrationDto) {
         if (userRepository.existsByEmail(registrationDto.getEmail())) {
-            return new ResponseEntity<>("Unable to create. Email is already taken!", HttpStatus.CONFLICT);
+            throw new IllegalArgumentException("Unable to create. Email is already taken!");
         }
 
         if (userRepository.existsByName(registrationDto.getName())) {
-            return new ResponseEntity<>("Unable to create. Name is already taken!", HttpStatus.CONFLICT);
+            throw new IllegalArgumentException("Unable to create. Name is already taken!");
         }
 
         saveUser(registrationDto);
-        return new ResponseEntity<>("User successfully registered", HttpStatus.CREATED);
+        return registrationDto;
+    }
+
+    @Override
+    public AuthResponse refreshToken(RefreshTokenDto refreshTokenDto) {
+        jwtProvider.validateToken(refreshTokenDto.getRefreshToken());
+        String email = jwtProvider.getEmailFromToken(refreshTokenDto.getRefreshToken());
+        User user = findByEmail(email);
+        String accessToken = jwtProvider.generateAccessToken(user.getEmail(), user.getRoles());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        return new AuthResponse(accessToken, refreshToken);
     }
 
     private void saveUser(RegistrationDto registrationDto) {
@@ -101,9 +110,17 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: " + email));
         Password userPassword = passwordRepository.findByUserEmail(email);
-        if (passwordEncoder.matches(password, userPassword.getPassword())) {
-            return user;
+        if (!passwordEncoder.matches(password, userPassword.getPassword())) {
+            throw new IllegalArgumentException("Invalid username or password!");
         }
-        return null;
+        return user;
+    }
+
+    private User findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with email: " + email));
+        Password userPassword = passwordRepository.findByUserEmail(email);
+        return user;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.task4.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,20 +29,19 @@ public class Elixir {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "cost")
     private int cost;
+    @Column(name = "level")
     private int level;
-
     @ManyToMany
     @JoinTable(
             name = "elixir_ingredient",
             joinColumns = @JoinColumn(name = "elixir_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    @JsonIgnore
     private List<Ingredient> ingredients;
-
     @ManyToMany(mappedBy = "elixirs")
-    @JsonIgnore
     private List<UserInventory> userInventories;
 }

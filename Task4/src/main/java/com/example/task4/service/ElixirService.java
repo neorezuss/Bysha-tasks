@@ -1,13 +1,12 @@
 package com.example.task4.service;
 
 import com.example.task4.dto.ElixirDto;
-import org.springframework.http.ResponseEntity;
+import com.example.task4.dto.ElixirFilteringParamsDto;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ElixirService {
-    ResponseEntity<List<ElixirDto>> getUserElixirs(Map<String, String> filteringParams);
+    List<ElixirDto> getUserElixirs(ElixirFilteringParamsDto filteringParams);
 
-    ResponseEntity<String> sellElixir(ElixirDto elixirDto);
+    ElixirDto sellElixir(ElixirDto elixirDto);
 }

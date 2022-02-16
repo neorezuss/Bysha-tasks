@@ -5,22 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class IngredientDto {
-    @NotEmpty
+public class IngredientFilteringParamsDto {
     @Size(min = 2, max = 255)
     private String name;
-    @NotEmpty
-    @Enumerated(EnumType.STRING)
+    @Size(min = 2, max = 255)
     private IngredientType type;
-    @NotEmpty
     @Size(min = 1)
-    private int cost;
+    private Integer costGT;
+    @Size(min = 1)
+    private Integer costLT;
+    @Size(min = 2, max = 255)
+    private String sortBy;
+    @Size(min = 2, max = 255)
+    private String sortDirection;
 }

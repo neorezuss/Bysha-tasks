@@ -5,14 +5,13 @@ import com.example.task4.dto.IngredientDto;
 import com.example.task4.entity.Elixir;
 import com.example.task4.entity.Ingredient;
 import com.example.task4.entity.UserInventory;
+import com.example.task4.exception.ElixirNotFoundException;
 import com.example.task4.repository.ElixirRepository;
 import com.example.task4.repository.IngredientRepository;
 import com.example.task4.repository.UserInventoryRepository;
 import com.example.task4.repository.specification.ElixirSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +36,9 @@ public class CraftServiceImpl implements CraftService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> craftByIngredients(List<IngredientDto> ingredientDtoList) {
+    public ElixirDto craftByIngredients(List<IngredientDto> ingredientDtoList) {
         if (ingredientDtoList.size() > MAX_RECIPE_SIZE || ingredientDtoList.size() < MIN_RECIPE_SIZE) {
-            return new ResponseEntity<>("Wrong recipe size! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Wrong recipe size! Elixir craft is failed!");
         }
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -52,33 +51,33 @@ public class CraftServiceImpl implements CraftService {
         Elixir elixir = getElixirByIngredients(ingredients);
 
         if (isNull(elixir)) {
-            return new ResponseEntity<>("There is no elixir with this recipe! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
+            throw new ElixirNotFoundException("There is no elixir with this recipe! Elixir craft is failed!");
         }
         if (!userInventory.getIngredients().containsAll(ingredients)) {
-            return new ResponseEntity<>("You don’t have needed ingredients! Elixir craft is failed!", HttpStatus.CONFLICT);
+            throw new IllegalArgumentException("You don’t have needed ingredients! Elixir craft is failed!");
         }
 
         craftElixir(userInventory, ingredients, elixir);
-        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
+        return convertToDto(elixir);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<String> craftByRecipe(ElixirDto elixirDto) {
+    public ElixirDto craftByRecipe(ElixirDto elixirDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         Elixir elixir = convertToEntity(elixirDto);
 
         if (isNull(elixir)) {
-            return new ResponseEntity<>("There is no elixir with this recipe! Elixir craft is failed!", HttpStatus.BAD_REQUEST);
+            throw new ElixirNotFoundException("There is no elixir with this recipe! Elixir craft is failed!");
         }
         if (!userInventory.getIngredients().containsAll(elixir.getIngredients())) {
-            return new ResponseEntity<>("You don’t have needed ingredients! Elixir craft is failed!", HttpStatus.CONFLICT);
+            throw new IllegalArgumentException("You don’t have needed ingredients! Elixir craft is failed!");
         }
 
         craftElixir(userInventory, elixir.getIngredients(), elixir);
-        return new ResponseEntity<>("Elixir was crafted!", HttpStatus.CREATED);
+        return convertToDto(elixir);
     }
 
     private Elixir getElixirByIngredients(List<Ingredient> ingredients) {
@@ -113,10 +112,15 @@ public class CraftServiceImpl implements CraftService {
     }
 
     private Ingredient convertToEntity(IngredientDto ingredientDto) {
-        return ingredientRepository.getIngredientByName(ingredientDto.getName());
+        return ingredientRepository.getIngredientByNameAndTypeAndCost(
+                ingredientDto.getName(), ingredientDto.getType(), ingredientDto.getCost());
     }
 
     private Elixir convertToEntity(ElixirDto elixirDto) {
         return elixirRepository.getElixirByName(elixirDto.getName());
+    }
+
+    private ElixirDto convertToDto(Elixir elixir) {
+        return new ElixirDto(elixir.getName(), elixir.getCost(), elixir.getLevel());
     }
 }

@@ -9,8 +9,7 @@ CREATE TABLE users
 );
 CREATE TABLE passwords
 (
-    id       BIGSERIAL PRIMARY KEY,
-    user_id  INTEGER      NOT NULL REFERENCES users,
+    user_id  BIGINT PRIMARY KEY REFERENCES users,
     password VARCHAR(255) NOT NULL
 );
 CREATE TABLE roles
@@ -20,14 +19,13 @@ CREATE TABLE roles
 );
 CREATE TABLE user_role
 (
-    id      BIGSERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users,
-    role_id INTEGER NOT NULL REFERENCES roles
+    user_id BIGINT REFERENCES users,
+    role_id BIGINT REFERENCES roles,
+    PRIMARY KEY (user_id, role_id)
 );
 CREATE TABLE user_inventories
 (
-    id      BIGSERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users,
+    user_id BIGINT PRIMARY KEY REFERENCES users,
     coins   INTEGER NOT NULL DEFAULT 100
 );
 CREATE TABLE ingredients
@@ -46,8 +44,8 @@ CREATE TABLE elixirs
 );
 CREATE TABLE elixir_ingredient
 (
-    elixir_id     INTEGER NOT NULL REFERENCES elixirs,
-    ingredient_id INTEGER NOT NULL REFERENCES ingredients,
+    elixir_id     BIGINT NOT NULL REFERENCES elixirs,
+    ingredient_id BIGINT NOT NULL REFERENCES ingredients,
     PRIMARY KEY (elixir_id, ingredient_id)
 );
 CREATE TABLE user_inventory_ingredient
@@ -62,6 +60,7 @@ CREATE TABLE user_inventory_elixir
     user_inventory_id INTEGER NOT NULL REFERENCES user_inventories,
     elixir_id         INTEGER NOT NULL REFERENCES elixirs
 );
+
 --rollback DROP TABLE user_inventory_ingredient
 --rollback DROP TABLE user_inventory_elixir
 --rollback DROP TABLE elixir_ingredient

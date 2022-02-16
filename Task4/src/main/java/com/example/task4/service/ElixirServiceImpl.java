@@ -1,24 +1,23 @@
 package com.example.task4.service;
 
 import com.example.task4.dto.ElixirDto;
+import com.example.task4.dto.ElixirFilteringParamsDto;
 import com.example.task4.entity.Elixir;
 import com.example.task4.entity.UserInventory;
+import com.example.task4.exception.ElixirNotFoundException;
 import com.example.task4.repository.ElixirRepository;
 import com.example.task4.repository.UserInventoryRepository;
-import com.example.task4.repository.specification.ElixirSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.task4.repository.specification.ElixirSpecification.buildSpecification;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -31,63 +30,44 @@ public class ElixirServiceImpl implements ElixirService {
     private final UserInventoryRepository userInventoryRepository;
 
     @Override
-    public ResponseEntity<List<ElixirDto>> getUserElixirs(Map<String, String> filteringParams) {
+    public List<ElixirDto> getUserElixirs(ElixirFilteringParamsDto filteringParams) {
         Specification<Elixir> specification = buildSpecification(filteringParams);
-        Sort.Direction direction = Sort.Direction.fromOptionalString(filteringParams.get("sortDirection"))
+        Sort.Direction direction = Sort.Direction.fromOptionalString(filteringParams.getSortDirection())
                 .orElse(Sort.DEFAULT_DIRECTION);
-
-        List<Elixir> filteredElixirs = elixirRepository.findAll(specification, Sort.by(direction, filteringParams.get("sortBy")));
-
-        if (filteredElixirs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        String sortBy = nonNull(filteringParams.getSortBy()) ? filteringParams.getSortBy() : DEFAULT_SORTING;
+        List<Elixir> filteredElixirs = elixirRepository.findAll(specification, Sort.by(direction, sortBy));
 
         List<ElixirDto> elixirDtoList = filteredElixirs.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(elixirDtoList, HttpStatus.OK);
+        return elixirDtoList;
     }
 
     @Override
     @Transactional
-    public ResponseEntity<String> sellElixir(ElixirDto elixirDto) {
+    public ElixirDto sellElixir(ElixirDto elixirDto) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Elixir elixir = elixirRepository.getElixirByName(elixirDto.getName());
 
         if (isNull(elixir)) {
-            return new ResponseEntity<>("There is no elixir with name " + elixirDto.getName() + "!", HttpStatus.NOT_FOUND);
+            throw new ElixirNotFoundException("There is no elixir with name " + elixirDto.getName() + "!");
         }
         if (!userInventory.getElixirs().contains(elixir)) {
-            return new ResponseEntity<>("You don’t have elixir with name " + elixir.getName() + "!", HttpStatus.NOT_FOUND);
+            throw new IllegalStateException("You don’t have elixir with name " + elixir.getName() + "!");
         }
 
         sellElixir(userInventory, elixir);
-        return new ResponseEntity<>("Elixir with name " + elixirDto.getName() + " was sold!", HttpStatus.OK);
+        return elixirDto;
     }
 
-    private Specification<Elixir> buildSpecification(Map<String, String> filteringParams) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        String name = filteringParams.get("name");
-        Integer costGT = nonNull(filteringParams.get("costGT")) ? Integer.valueOf(filteringParams.get("costGT")) : null;
-        Integer costLT = nonNull(filteringParams.get("costLT")) ? Integer.valueOf(filteringParams.get("costLT")) : null;
-        Integer level = nonNull(filteringParams.get("level")) ? Integer.valueOf(filteringParams.get("level")) : null;
-
-        return Specification
-                .where(ElixirSpecification.filterByUsersEmail(userEmail))
-                .and(ElixirSpecification.filterByName(name))
-                .and(ElixirSpecification.filterByCostGT(costGT))
-                .and(ElixirSpecification.filterByCostLT(costLT))
-                .and(ElixirSpecification.filterByLevel(level));
+    private ElixirDto convertToDto(Elixir elixir) {
+        return new ElixirDto(elixir.getName(), elixir.getCost(), elixir.getLevel());
     }
 
     private void sellElixir(UserInventory userInventory, Elixir elixir) {
         userInventory.getElixirs().remove(elixir);
         userInventory.setCoins(userInventory.getCoins() + elixir.getCost());
-    }
-
-    private ElixirDto convertToDto(Elixir elixir) {
-        return new ElixirDto(elixir.getName(), elixir.getCost(), elixir.getLevel());
     }
 }
