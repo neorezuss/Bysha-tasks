@@ -51,6 +51,6 @@ public class AuthRestController {
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Invalid registration data!");
         }
-        return authService.refreshToken(refreshTokenDto);
+        return authService.refreshTokens(refreshTokenDto);
     }
 }

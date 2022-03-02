@@ -37,17 +37,15 @@ public class IngredientServiceImpl implements IngredientService {
         String sortBy = nonNull(filteringParams.getSortBy()) ? filteringParams.getSortBy() : DEFAULT_SORTING;
         List<Ingredient> filteredIngredients = ingredientRepository.findAll(specification, Sort.by(direction, sortBy));
 
-        List<IngredientDto> ingredientDtoList = filteredIngredients.stream()
+        return filteredIngredients.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-
-        return ingredientDtoList;
     }
 
     @Override
     @Transactional
     public IngredientDto buyIngredient(IngredientDto ingredientDto) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userEmail = getUserEmail();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByNameAndTypeAndCost(
                 ingredientDto.getName(), ingredientDto.getType(), ingredientDto.getCost());
@@ -66,7 +64,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     @Transactional
     public IngredientDto sellIngredient(IngredientDto ingredientDto) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userEmail = getUserEmail();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Ingredient ingredient = ingredientRepository.getIngredientByNameAndTypeAndCost(
                 ingredientDto.getName(), ingredientDto.getType(), ingredientDto.getCost());
@@ -80,6 +78,10 @@ public class IngredientServiceImpl implements IngredientService {
 
         sellIngredient(userInventory, ingredient);
         return ingredientDto;
+    }
+
+    private String getUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     private IngredientDto convertToDto(Ingredient ingredient) {

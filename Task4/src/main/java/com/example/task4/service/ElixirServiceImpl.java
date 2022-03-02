@@ -37,17 +37,15 @@ public class ElixirServiceImpl implements ElixirService {
         String sortBy = nonNull(filteringParams.getSortBy()) ? filteringParams.getSortBy() : DEFAULT_SORTING;
         List<Elixir> filteredElixirs = elixirRepository.findAll(specification, Sort.by(direction, sortBy));
 
-        List<ElixirDto> elixirDtoList = filteredElixirs.stream()
+        return filteredElixirs.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-
-        return elixirDtoList;
     }
 
     @Override
     @Transactional
     public ElixirDto sellElixir(ElixirDto elixirDto) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userEmail = getUserEmail();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
         Elixir elixir = elixirRepository.getElixirByName(elixirDto.getName());
 
@@ -60,6 +58,10 @@ public class ElixirServiceImpl implements ElixirService {
 
         sellElixir(userInventory, elixir);
         return elixirDto;
+    }
+
+    private String getUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     private ElixirDto convertToDto(Elixir elixir) {

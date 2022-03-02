@@ -10,5 +10,5 @@ public interface AuthService {
 
     RegistrationDto registerUser(RegistrationDto registrationDto);
 
-    AuthResponse refreshToken(RefreshTokenDto refreshTokenDto);
+    AuthResponse refreshTokens(RefreshTokenDto refreshTokenDto);
 }

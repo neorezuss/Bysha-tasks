@@ -41,7 +41,7 @@ public class CraftServiceImpl implements CraftService {
             throw new IllegalArgumentException("Wrong recipe size! Elixir craft is failed!");
         }
 
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userEmail = getUserEmail();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         List<Ingredient> ingredients = ingredientDtoList.stream()
@@ -64,7 +64,7 @@ public class CraftServiceImpl implements CraftService {
     @Override
     @Transactional
     public ElixirDto craftByRecipe(ElixirDto elixirDto) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userEmail = getUserEmail();
         UserInventory userInventory = userInventoryRepository.getByUserEmail(userEmail);
 
         Elixir elixir = convertToEntity(elixirDto);
@@ -78,6 +78,10 @@ public class CraftServiceImpl implements CraftService {
 
         craftElixir(userInventory, elixir.getIngredients(), elixir);
         return convertToDto(elixir);
+    }
+
+    private String getUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     private Elixir getElixirByIngredients(List<Ingredient> ingredients) {

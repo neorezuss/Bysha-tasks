@@ -65,12 +65,11 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Unable to create. Name is already taken!");
         }
 
-        saveUser(registrationDto);
-        return registrationDto;
+        return saveUser(registrationDto);
     }
 
     @Override
-    public AuthResponse refreshToken(RefreshTokenDto refreshTokenDto) {
+    public AuthResponse refreshTokens(RefreshTokenDto refreshTokenDto) {
         jwtProvider.validateToken(refreshTokenDto.getRefreshToken());
         String email = jwtProvider.getEmailFromToken(refreshTokenDto.getRefreshToken());
         User user = findByEmail(email);
@@ -79,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
-    private void saveUser(RegistrationDto registrationDto) {
+    private RegistrationDto saveUser(RegistrationDto registrationDto) {
         Role defaultRole = roleRepository.getRoleByName(RoleEnum.ROLE_USER);
 
         User user = User.builder()
@@ -103,12 +102,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         userInventoryRepository.save(userInventory);
+
+        return registrationDto;
     }
 
     private User findByEmailAndPassword(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email: " + email));
+        User user = findByEmail(email);
         Password userPassword = passwordRepository.findByUserEmail(email);
         if (!passwordEncoder.matches(password, userPassword.getPassword())) {
             throw new IllegalArgumentException("Invalid username or password!");
@@ -117,10 +116,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private User findByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: " + email));
-        Password userPassword = passwordRepository.findByUserEmail(email);
-        return user;
     }
 }

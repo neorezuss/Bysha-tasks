@@ -39,7 +39,7 @@ class AuthRestControllerValidTest {
     void registerUser() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/auth/register")
-                        .content(asJsonString(new RegistrationDto("newUser", "newUser", "newUser")))
+                        .content(asJsonString(new RegistrationDto("newUser", "newUser@gmail.com", "newUser")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
