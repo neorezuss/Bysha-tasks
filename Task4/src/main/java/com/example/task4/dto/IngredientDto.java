@@ -7,20 +7,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class IngredientDto {
-    @NotEmpty
-    @Size(min = 2, max = 255)
+    @NotBlank(message = "Name may not be blank")
+    @Size(min = 2, max = 255, message = "Name length should be between 2 and 255 characters")
     private String name;
-    @NotEmpty
+    @NotBlank(message = "Type may not be blank")
     @Enumerated(EnumType.STRING)
     private IngredientType type;
-    @NotEmpty
-    @Size(min = 1)
+    @Min(value = 1, message = "Cost should be greater than 0")
     private int cost;
 }

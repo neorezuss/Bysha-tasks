@@ -4,7 +4,7 @@ import com.example.task4.dto.IngredientDto;
 import com.example.task4.dto.IngredientFilteringParamsDto;
 import com.example.task4.entity.Ingredient;
 import com.example.task4.entity.UserInventory;
-import com.example.task4.exception.ElixirNotFoundException;
+import com.example.task4.exception.IngredientNotFoundException;
 import com.example.task4.repository.IngredientRepository;
 import com.example.task4.repository.UserInventoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientDto.getName(), ingredientDto.getType(), ingredientDto.getCost());
 
         if (isNull(ingredient)) {
-            throw new ElixirNotFoundException("There is no ingredient with name" + ingredientDto.getName() + "!");
+            throw new IngredientNotFoundException("There is no ingredient with name" + ingredientDto.getName() + "!");
         }
         if (!(userInventory.getCoins() >= ingredient.getCost())) {
             throw new IllegalStateException("You dont have enough coins!");
@@ -70,7 +70,7 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientDto.getName(), ingredientDto.getType(), ingredientDto.getCost());
 
         if (isNull(ingredient)) {
-            throw new ElixirNotFoundException("There is no ingredient with name" + ingredientDto.getName() + "!");
+            throw new IngredientNotFoundException("There is no ingredient with name" + ingredientDto.getName() + "!");
         }
         if (!userInventory.getIngredients().contains(ingredient)) {
             throw new IllegalStateException("You don’t have ingredient with name " + ingredient.getName() + "!");
