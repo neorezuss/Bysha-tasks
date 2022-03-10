@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomRestExceptionHandler {
     @ExceptionHandler
-    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception) {
+    public ResponseEntity<ApiErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         ApiErrorResponse apiErrorResponse =
                 new ApiErrorResponse(HttpStatus.NOT_FOUND, exception.getLocalizedMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(apiErrorResponse, apiErrorResponse.getStatus());
@@ -25,28 +25,28 @@ public class CustomRestExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleIllegalStateException(IllegalStateException exception) {
+    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException exception) {
         ApiErrorResponse apiErrorResponse =
                 new ApiErrorResponse(HttpStatus.CONFLICT, exception.getLocalizedMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(apiErrorResponse, apiErrorResponse.getStatus());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleElixirNotFoundException(ElixirNotFoundException exception) {
+    public ResponseEntity<ApiErrorResponse> handleElixirNotFoundException(ElixirNotFoundException exception) {
         ApiErrorResponse apiErrorResponse =
                 new ApiErrorResponse(HttpStatus.NOT_FOUND, exception.getLocalizedMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(apiErrorResponse, apiErrorResponse.getStatus());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleIngredientNotFoundException(IngredientNotFoundException exception) {
+    public ResponseEntity<ApiErrorResponse> handleIngredientNotFoundException(IngredientNotFoundException exception) {
         ApiErrorResponse apiErrorResponse =
                 new ApiErrorResponse(HttpStatus.NOT_FOUND, exception.getLocalizedMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(apiErrorResponse, apiErrorResponse.getStatus());
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         StringBuilder errors = new StringBuilder();
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -59,7 +59,7 @@ public class CustomRestExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleTokenValidationException(TokenValidationException exception) {
+    public ResponseEntity<ApiErrorResponse> handleTokenValidationException(TokenValidationException exception) {
         ApiErrorResponse apiErrorResponse =
                 new ApiErrorResponse(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(apiErrorResponse, apiErrorResponse.getStatus());
